@@ -4,7 +4,6 @@
 **Date:** August 2026
 
 ---
----
 
 ## Project Overview
 
@@ -14,15 +13,14 @@ The lab is built entirely on a single physical host using VMware Workstation. Th
 ---
 
 ## Table of Contents
-
-- Project Overview
-- Objectives
-- Tools Used
-- Lab Architecture
-- Walkthrough
-- Results (So Far)
-- Skills Demonstrated
-- Next Steps
+- [Project Overview](#project-overview)
+- [Objectives](#objectives)
+- [Tools Used](#tools-used)
+- [Lab Architecture](#lab-architecture)
+- [Walkthrough](#walkthrough)
+- [Results (So Far)](#results-so-far)
+- [Skills Demonstrated](#skills-demonstrated)
+- [Next Steps](#next-steps)
 
 ---
 
@@ -38,12 +36,13 @@ The lab is built entirely on a single physical host using VMware Workstation. Th
 
 ## Tools Used
 
-- **Monitored Endpoint:** Windows 10 (VMware Workstation)
-- **SIEM Platform:** Splunk Enterprise (installed on the host machine)
-- **Log Forwarding Agent:** Splunk Universal Forwarder (installed on the Windows VM)
-- **Endpoint Telemetry:** Sysmon, using the SwiftOnSecurity community configuration
-- **Reserved for a future phase:** Kali Linux (attack simulation / detection engineering)
-
+| Component | Technology |
+|----------|------------|
+| Monitored Endpoint | Windows 10 (VMware Workstation) |
+| SIEM Platform | Splunk Enterprise (host machine) |
+| Log Forwarding Agent | Splunk Universal Forwarder |
+| Endpoint Telemetry | Sysmon (SwiftOnSecurity configuration) |
+| Future Attack Simulation | Kali Linux |
 ## Lab Architecture
 
 The diagram below shows how the components in this lab relate to one another. The Windows 10 VM sits inside VMware Workstation and runs two things side by side: Sysmon, which watches the operating system and generates detailed telemetry (process creation, file creation, network connections, and more), and the Splunk Universal Forwarder, which is responsible for reading both Sysmon's event log and the standard Windows Event Logs (Security, System, Application) and shipping that data off the VM. The Forwarder sends everything over TCP port 9997 to Splunk Enterprise, which runs on the host machine outside the VM and is responsible for indexing the data and making it searchable.
@@ -68,7 +67,7 @@ This project is documented as a set of linked, focused write-ups rather than one
 - Windows VM, Splunk Enterprise, and the Splunk Universal Forwarder were successfully deployed and connected end-to-end
 - General Windows Event Log data (Security, System) is confirmed flowing into Splunk and is fully searchable
 - Sysmon is confirmed to be correctly installed and actively generating detailed local telemetry (Event ID 11 and others), using the SwiftOnSecurity configuration
-- Sysmon-to-Splunk forwarding specifically is not yet working and remains under active investigation, despite general log forwarding functioning correctly — see the [troubleshooting write-up](Troubleshooting%20-%20Sysmon%20Forwarding%20Issue.md) for details
+Sysmon telemetry is confirmed to be generated locally; however, Sysmon events are not yet being indexed in Splunk despite successful forwarding of standard Windows Event Logs. The investigation and troubleshooting process is documented in the dedicated troubleshooting write-up. — see the [troubleshooting write-up](Troubleshooting%20-%20Sysmon%20Forwarding%20Issue.md) for details
 
 ## Skills Demonstrated
 
