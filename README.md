@@ -1,8 +1,9 @@
 # SOC Home Lab — Phase 1: Windows Endpoint Monitoring with Splunk & Sysmon
 
 **Author:** Kehinde Oyewumi
-
 **Date:** August 2026
+
+---
 ---
 
 ## Project Overview
