@@ -4,23 +4,51 @@
 
 With the endpoint in place, the next step was standing up the SIEM that would receive and analyze its logs. Splunk Enterprise was downloaded and installed directly on the host machine rather than inside a VM, so that it could act as a stable, always-available collection point regardless of what was happening inside the lab's virtual machines. During installation, administrator credentials were created for the instance, and after setup completed, a login to the Splunk web interface was used to confirm the installation had succeeded and the platform was ready to receive data.
 
-![Downloading Splunk Enterprise](figure05_splunk_download.png)
-*Downloading Splunk Enterprise on the host machine*
+<p align="center">
+  <img src="figure05_splunk_download.png" width="900" alt="Downloading Splunk Enterprise">
+</p>
 
-![Splunk setup wizard](figure06_splunk_wizard.png)
-*Splunk Enterprise setup wizard*
+<p align="center"><em>Figure 5. Downloading Splunk Enterprise on the host machine.</em></p>
 
-![Splunk installation in progress](figure07_splunk_install.png)
-*Splunk Enterprise installation in progress*
+---
 
-![Creating admin credentials](figure08_splunk_credentials.png)
-*Creating administrator credentials during setup*
+<p align="center">
+  <img src="figure06_splunk_wizard.png" width="900" alt="Splunk setup wizard">
+</p>
 
-![Splunk sign-in page](figure09_splunk_signin.png)
-*Splunk Enterprise sign-in page*
+<p align="center"><em>Figure 6. Splunk Enterprise setup wizard.</em></p>
 
-![Splunk home page](figure10_splunk_homepage.png)
-*Splunk Enterprise home page, confirming the installation completed successfully*
+---
+
+<p align="center">
+  <img src="figure07_splunk_install.png" width="900" alt="Splunk installation in progress">
+</p>
+
+<p align="center"><em>Figure 7. Splunk Enterprise installation in progress.</em></p>
+
+---
+
+<p align="center">
+  <img src="figure08_splunk_credentials.png" width="900" alt="Creating administrator credentials">
+</p>
+
+<p align="center"><em>Figure 8. Creating administrator credentials during setup.</em></p>
+
+---
+
+<p align="center">
+  <img src="figure09_splunk_signin.png" width="900" alt="Splunk sign-in page">
+</p>
+
+<p align="center"><em>Figure 9. Splunk Enterprise sign-in page.</em></p>
+
+---
+
+<p align="center">
+  <img src="figure10_splunk_homepage.png" width="900" alt="Splunk home page">
+</p>
+
+<p align="center"><em>Figure 10. Splunk Enterprise home page, confirming the installation completed successfully.</em></p>
 
 ---
 
