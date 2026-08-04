@@ -1,27 +1,40 @@
-# Splunk Enterprise Installation (Host Machine)
+# Splunk Universal Forwarder Installation & Configuration
 
 [← Back to project overview](README.md)
 
-With the endpoint in place, the next step was standing up the SIEM that would receive and analyze its logs. Splunk Enterprise was downloaded and installed directly on the host machine rather than inside a VM, so that it could act as a stable, always-available collection point regardless of what was happening inside the lab's virtual machines. During installation, administrator credentials were created for the instance, and after setup completed, a login to the Splunk web interface was used to confirm the installation had succeeded and the platform was ready to receive data.
+## Installing the Forwarder
 
-![Downloading Splunk Enterprise](images/figure05_splunk_download.png)
-*Downloading Splunk Enterprise on the host machine*
+For Splunk Enterprise to receive anything from the Windows VM, an agent needed to be running on that VM whose job is to read local log data and ship it off to the indexer. That agent is the Splunk Universal Forwarder. It was downloaded and installed inside the Windows 10 VM, and during setup, "on-premises Splunk Enterprise instance" was selected as the deployment type, since this lab does not use Splunk Cloud.
 
-![Splunk setup wizard](images/figure06_splunk_wizard.png)
-*Splunk Enterprise setup wizard*
+![Downloading Universal Forwarder](figure11_forwarder_download.png)
+*Downloading the Splunk Universal Forwarder*
 
-![Splunk installation in progress](images/figure07_splunk_install.png)
-*Splunk Enterprise installation in progress*
+![Forwarder installation in progress](figure12_forwarder_install.png)
+*Universal Forwarder installation in progress*
 
-![Creating admin credentials](images/figure08_splunk_credentials.png)
-*Creating administrator credentials during setup*
+![Forwarder setup](figure13_forwarder_setup.png)
+*Universal Forwarder setup — license agreement and instance type*
 
-![Splunk sign-in page](images/figure09_splunk_signin.png)
-*Splunk Enterprise sign-in page*
+## Configuring Log Forwarding
 
-![Splunk home page](images/figure10_splunk_homepage.png)
-*Splunk Enterprise home page, confirming the installation completed successfully*
+Installing the Forwarder alone does not create a working pipeline — both ends need to agree on where data is going and where it is expected to arrive. On the Windows VM side, the Universal Forwarder was configured with the host machine's IP address (`192.168.23.1`) and port `9997` as its receiving destination. On the Splunk Enterprise side, the platform was configured under Forwarding and Receiving to listen for incoming forwarder connections on that same port. Both sides of this configuration have to match for data to flow, which is why they are documented together here.
+
+![Forwarder receiving config](figure14_forwarder_config.png)
+*Universal Forwarder configured with the receiving server address and port*
+
+![Splunk configured to receive](figure15_splunk_receiving.png)
+*Splunk Enterprise configured to receive data on port 9997*
+
+## Confirming the Forwarder Connection
+
+Configuration alone does not guarantee a working connection, so this was verified directly rather than assumed. From the Windows VM's command line, the forward-server status was checked, which confirmed an active forward to `192.168.23.1:9997`. This was then cross-checked from the Splunk Enterprise side by searching Splunk's own internal logs (`index=_internal sourcetype=splunkd`), which returned thousands of events — proof that the Forwarder was not just configured correctly on paper, but actually exchanging data with Splunk Enterprise in real time.
+
+![CLI confirmation of active forward](figure16_forwarder_confirm_vm.png)
+*Command-line confirmation of an active forward from the Windows VM*
+
+![Splunk search confirming forwarder activity](figure17_forwarder_confirm_splunk.png)
+*Splunk Enterprise search confirming forwarder activity (index=_internal sourcetype=splunkd)*
 
 ---
 
-Next: [Splunk Universal Forwarder Installation & Configuration →](Splunk%20Universal%20Forwarder%20Installation%20and%20Configuration.md)
+Next: [Sysmon Installation & Configuration →](Sysmon%20Installation%20and%20Configuration.md)

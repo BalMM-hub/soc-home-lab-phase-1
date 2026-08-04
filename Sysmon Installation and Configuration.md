@@ -1,40 +1,37 @@
-# Splunk Universal Forwarder Installation & Configuration
+# Sysmon Installation & Configuration
 
 [← Back to project overview](README.md)
 
-## Installing the Forwarder
+## Installing Sysmon
 
-For Splunk Enterprise to receive anything from the Windows VM, an agent needed to be running on that VM whose job is to read local log data and ship it off to the indexer. That agent is the Splunk Universal Forwarder. It was downloaded and installed inside the Windows 10 VM, and during setup, "on-premises Splunk Enterprise instance" was selected as the deployment type, since this lab does not use Splunk Cloud.
+With the transport layer between the VM and Splunk confirmed working, attention turned to the actual source of meaningful security telemetry: Sysmon. Sysmon (version 15.2) was installed on the Windows VM. Rather than running it with default settings, the SwiftOnSecurity configuration file was applied — a widely used, community-maintained Sysmon configuration that is tuned to capture high-value security events (process creation, file creation, network connections, and more) while filtering out noisy, low-value events. This is the same approach used in many real SOC environments, since raw default Sysmon output can be overwhelming and includes a large amount of noise.
 
-![Downloading Universal Forwarder](images/figure11_forwarder_download.png)
-*Downloading the Splunk Universal Forwarder*
+![Downloading Sysmon](figure18_sysmon_download.png)
+*Downloading Sysmon from Microsoft Sysinternals*
 
-![Forwarder installation in progress](images/figure12_forwarder_install.png)
-*Universal Forwarder installation in progress*
+![SwiftOnSecurity config](figure19_sysmon_config.png)
+*SwiftOnSecurity Sysmon configuration file retrieved from GitHub*
 
-![Forwarder setup](images/figure13_forwarder_setup.png)
-*Universal Forwarder setup — license agreement and instance type*
+## Adding Sysmon as a Log Source
 
-## Configuring Log Forwarding
+Installing Sysmon makes it generate events locally in Windows Event Viewer, but by default the Splunk Universal Forwarder does not know to collect that specific event log — it has to be told explicitly. The Forwarder's `inputs.conf` file was edited to add a new input stanza pointing at the Sysmon Operational event log, alongside the existing stanzas for Security, Application, and System logs. After saving the change, the Forwarder was restarted so the new configuration would take effect.
 
-Installing the Forwarder alone does not create a working pipeline — both ends need to agree on where data is going and where it is expected to arrive. On the Windows VM side, the Universal Forwarder was configured with the host machine's IP address (`192.168.23.1`) and port `9997` as its receiving destination. On the Splunk Enterprise side, the platform was configured under Forwarding and Receiving to listen for incoming forwarder connections on that same port. Both sides of this configuration have to match for data to flow, which is why they are documented together here.
+![inputs.conf updated](figure20_inputs_conf.png)
+*inputs.conf updated with the Sysmon Operational log input*
 
-![Forwarder receiving config](images/figure14_forwarder_config.png)
-*Universal Forwarder configured with the receiving server address and port*
+![Forwarder restarted](figure21_forwarder_restart.png)
+*Universal Forwarder restarted to apply the new Sysmon input*
 
-![Splunk configured to receive](images/figure15_splunk_receiving.png)
-*Splunk Enterprise configured to receive data on port 9997*
+## Verifying Sysmon Locally
 
-## Confirming the Forwarder Connection
+Before worrying about whether Sysmon data was reaching Splunk, it was important to confirm Sysmon was actually generating events at all. A test file was created on the Windows VM specifically to trigger a FileCreate event, and Windows Event Viewer was checked to confirm Sysmon Event ID 11 (FileCreate) appeared as expected. A general search was also run in Splunk Enterprise for events associated with the VM's hostname, to get an early read on what data was already flowing in.
 
-Configuration alone does not guarantee a working connection, so this was verified directly rather than assumed. From the Windows VM's command line, the forward-server status was checked, which confirmed an active forward to `192.168.23.1:9997`. This was then cross-checked from the Splunk Enterprise side by searching Splunk's own internal logs (`index=_internal sourcetype=splunkd`), which returned thousands of events — proof that the Forwarder was not just configured correctly on paper, but actually exchanging data with Splunk Enterprise in real time.
+![Sysmon event in Event Viewer](figure22_event_viewer.png)
+*Sysmon Event ID 11 (FileCreate) confirmed in Windows Event Viewer*
 
-![CLI confirmation of active forward](images/figure16_forwarder_confirm_vm.png)
-*Command-line confirmation of an active forward from the Windows VM*
-
-![Splunk search confirming forwarder activity](images/figure17_forwarder_confirm_splunk.png)
-*Splunk Enterprise search confirming forwarder activity (index=_internal sourcetype=splunkd)*
+![Splunk search by host](figure23_splunk_host_search.png)
+*Splunk Enterprise search showing events from the Windows VM host*
 
 ---
 
-Next: [Sysmon Installation & Configuration →](Sysmon%20Installation%20and%20Configuration.md)
+Next: [Troubleshooting: Sysmon Forwarding Issue →](Troubleshooting%20-%20Sysmon%20Forwarding%20Issue.md)
