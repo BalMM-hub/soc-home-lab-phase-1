@@ -1,8 +1,8 @@
 # SOC Home Lab — Phase 1: Windows Endpoint Monitoring with Splunk & Sysmon
 
 **Author:** Kehinde Oyewumi
-**Date:** August 2026
 
+**Date:** August 2026
 ---
 
 ## Project Overview
@@ -10,6 +10,20 @@
 This project is the first phase of a broader Security Operations Center (SOC) home lab build. The objective was to design and implement a working endpoint monitoring pipeline: a Windows 10 machine generating detailed system activity through Sysmon, with that activity forwarded to a centralized Splunk Enterprise instance acting as the SIEM. Rather than treating this as a single install-and-done task, the project was approached the way a SOC analyst would approach standing up new log sources in production: install each component individually, verify it works in isolation, connect the pieces, and validate the full path end-to-end before trusting the data.
 
 The lab is built entirely on a single physical host using VMware Workstation. The Windows 10 virtual machine represents the monitored endpoint, while Splunk Enterprise runs directly on the host machine and plays the role of the central SIEM. A Kali Linux virtual machine is already present in the environment and is reserved for a later phase of the project. This document covers Phase 1 only: getting visibility working. Later phases will build on this foundation.
+---
+
+## Table of Contents
+
+- Project Overview
+- Objectives
+- Tools Used
+- Lab Architecture
+- Walkthrough
+- Results (So Far)
+- Skills Demonstrated
+- Next Steps
+
+---
 
 ## Objectives
 
@@ -33,9 +47,11 @@ The lab is built entirely on a single physical host using VMware Workstation. Th
 
 The diagram below shows how the components in this lab relate to one another. The Windows 10 VM sits inside VMware Workstation and runs two things side by side: Sysmon, which watches the operating system and generates detailed telemetry (process creation, file creation, network connections, and more), and the Splunk Universal Forwarder, which is responsible for reading both Sysmon's event log and the standard Windows Event Logs (Security, System, Application) and shipping that data off the VM. The Forwarder sends everything over TCP port 9997 to Splunk Enterprise, which runs on the host machine outside the VM and is responsible for indexing the data and making it searchable.
 
-![Architecture diagram](figure01_architecture.png)
-*Log flow from the Windows 10 VM to Splunk Enterprise on the host machine*
+<p align="center">
+  <img src="figure01_architecture.png" width="900" alt="SOC home lab architecture">
+</p>
 
+<p align="center"><em>Figure 1. Log flow from the Windows 10 VM to Splunk Enterprise on the host machine.</em></p>
 ## Walkthrough
 
 This project is documented as a set of linked, focused write-ups rather than one long file. Each one covers a single stage of the pipeline in full detail, with screenshots.
